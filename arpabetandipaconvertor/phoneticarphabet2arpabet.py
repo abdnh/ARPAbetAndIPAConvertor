@@ -8,6 +8,8 @@ from arpabetandipaconvertor.excepts import PhonemeError
 from arpabetandipaconvertor.model.syllable import Syllable
 from arpabetandipaconvertor.model.word import Word
 from arpabetandipaconvertor.model.stress import Stress
+from arpabetandipaconvertor.model.phoneme import Phoneme
+
 from enum import Enum, unique
 
 @unique
@@ -50,6 +52,12 @@ class PhoneticAlphabet2ARPAbetConvertor:
 
         for str in secondary_stress_ipa:
             self._stress_libs_dic[str] = Stress.Secondary
+
+    def add_custom_mapping(self, ipa, arpabet):
+        phoneme = Phoneme(arpabet=arpabet, american=ipa, english=ipa, ipa=ipa, is_vowel=False)
+        self._ipa_tree[phoneme.ipa] = phoneme
+        self._kk_tree[phoneme.american] = phoneme
+        self._dj_tree[phoneme.english] = phoneme
 
     def _is_stop(self, c):
         return self._stop_libs_dic.get(c, False)
