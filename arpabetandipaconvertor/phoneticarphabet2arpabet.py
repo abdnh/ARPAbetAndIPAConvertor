@@ -154,7 +154,7 @@ class PhoneticAlphabet2ARPAbetConvertor:
             if syllable.stress and not syllable.have_vowel:
                 raise PhonemeError("%s there are accent marks but no vowels!" % temp_syllable_str)
             word.add_syllable(syllable)
-        else:
-            raise PhonemeError('Unrecognized phonetic symbols %s' % temp_ch)
 
-        return word.translate_to_arpabet()
+        partial = not last_phoneme
+
+        return word.translate_to_arpabet(), partial
