@@ -5,6 +5,7 @@ class PhonemeError(Exception):
     pass
 
 class UnrecognizedSymbolsError(PhonemeError):
-    def __init__(self, symbols):
+    def __init__(self, symbols, word):
         self.symbols = symbols
-        super().__init__('Unrecognized phonetic symbols %s' % symbols)
+        self.partial_arpabet = word.translate_to_arpabet()
+        super().__init__(f'Unrecognized phonetic symbols {symbols}')

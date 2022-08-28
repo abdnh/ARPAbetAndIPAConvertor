@@ -111,7 +111,7 @@ class PhoneticAlphabet2ARPAbetConvertor:
             stress = self._stress_libs_dic.get(ch, None)
             if stress:
                 if (not last_phoneme) and index > 0:
-                    raise UnrecognizedSymbolsError(temp_ch)
+                    raise UnrecognizedSymbolsError(temp_ch, word)
                 else:
                     '''
                     遇到重音标识，说明前面是是一个音节，添加到word中，并清空last_phoneme及temp_ch
@@ -155,6 +155,6 @@ class PhoneticAlphabet2ARPAbetConvertor:
                 raise PhonemeError("%s there are accent marks but no vowels!" % temp_syllable_str)
             word.add_syllable(syllable)
         else:
-            raise UnrecognizedSymbolsError(temp_ch)
+            raise UnrecognizedSymbolsError(temp_ch, word)
 
         return word.translate_to_arpabet()
