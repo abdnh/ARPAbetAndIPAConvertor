@@ -33,31 +33,31 @@ class TestIPAToARPAbet(unittest.TestCase):
         with self.assertRaises(PhonemeError) as cm:
             f = self._ipa_convertor.convert("wilkins'n")
         the_exception = cm.exception
-        self.assertEqual(the_exception.message, 'ns\' Inappropriate accent mark - \' has no vowel in the previous syllable!')
+        self.assertEqual(str(the_exception), 'ns\' Inappropriate accent mark - \' has no vowel in the previous syllable!')
 
         # 边缘测试 重音标识隔断完整的音符
         with self.assertRaises(PhonemeError) as cm:
             f = self._ipa_convertor.convert("wilkins'n")
         the_exception = cm.exception
-        self.assertEqual(the_exception.message, 'ns\' Inappropriate accent mark - \' has no vowel in the previous syllable!')
+        self.assertEqual(str(the_exception), 'ns\' Inappropriate accent mark - \' has no vowel in the previous syllable!')
 
         # 边缘测试 重音标识不对，并没有元音
         with self.assertRaises(PhonemeError) as cm:
             f = self._ipa_convertor.convert("wilkia'ʊsn")
         the_exception = cm.exception
-        self.assertEqual(the_exception.message, 'Unrecognized phonetic symbols a')
+        self.assertEqual(str(the_exception), 'Unrecognized phonetic symbols a')
 
         # 边缘测试 最后一个音节美音找完整
         with self.assertRaises(PhonemeError) as cm:
             f = self._ipa_convertor.convert("wilki'sna")
         the_exception = cm.exception
-        self.assertEqual(the_exception.message, 'Unrecognized phonetic symbols a')
+        self.assertEqual(str(the_exception), 'Unrecognized phonetic symbols a')
 
         # 边缘测试 中间一个不完整的音节连带到做好匹配不到合适的音标
         with self.assertRaises(PhonemeError) as cm:
             f = self._ipa_convertor.convert("wilki'san")
         the_exception = cm.exception
-        self.assertEqual(the_exception.message, 'Unrecognized phonetic symbols an')
+        self.assertEqual(str(the_exception), 'Unrecognized phonetic symbols an')
 
 
 

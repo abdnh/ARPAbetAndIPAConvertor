@@ -33,25 +33,25 @@ class TestIPAToARPAbet(unittest.TestCase):
         with self.assertRaises(PhonemeError) as cm:
             f = self._arpabet_convertor.convert_to_american_phonetic_alphabet("W IY1 L K IY4 N S N")
         the_exception =cm.exception
-        self.assertEqual(the_exception.message, 'IY The accent mark is incorrect, marked as 4')
+        self.assertEqual(str(the_exception), 'IY The accent mark is incorrect, marked as 4')
 
         # 边缘测试：ARPAbet不对
         with self.assertRaises(PhonemeError) as cm:
             f = self._arpabet_convertor.convert_to_american_phonetic_alphabet("W IY1 L K IG N S N")
         the_exception =cm.exception
-        self.assertEqual(the_exception.message, 'IG Can\'t match the appropriate phonetic symbol')
+        self.assertEqual(str(the_exception), 'IG Can\'t match the appropriate phonetic symbol')
 
 
         # 边缘测试：重音标识位置不对
         with self.assertRaises(PhonemeError) as cm:
             f = self._arpabet_convertor.convert_to_american_phonetic_alphabet("W IY1 L K IY N1 S N")
         the_exception =cm.exception
-        self.assertEqual(the_exception.message, 'N1 The accent mark is in the wrong place - the current N is not a vowel')
+        self.assertEqual(str(the_exception), 'N1 The accent mark is in the wrong place - the current N is not a vowel')
 
         # 边缘测试：标记重音的ARPAbet不对
         with self.assertRaises(PhonemeError) as cm:
             f = self._arpabet_convertor.convert_to_american_phonetic_alphabet("W IY1 L K IY X1 S N")
         the_exception =cm.exception
-        self.assertEqual(the_exception.message, 'X Can\'t match the appropriate phonetic symbol')
+        self.assertEqual(str(the_exception), 'X Can\'t match the appropriate phonetic symbol')
 
 
