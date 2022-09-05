@@ -54,10 +54,18 @@ class PhoneticAlphabet2ARPAbetConvertor:
             self._stress_libs_dic[str] = Stress.Secondary
 
     def add_custom_mapping(self, ipa, arpabet, is_vowel):
-        phoneme = Phoneme(arpabet=arpabet, american=ipa, english=ipa, ipa=ipa, is_vowel=is_vowel)
-        self._ipa_tree[phoneme.ipa] = phoneme
-        self._kk_tree[phoneme.american] = phoneme
-        self._dj_tree[phoneme.english] = phoneme
+        if arpabet is not None:
+            phoneme = Phoneme(arpabet=arpabet, american=ipa, english=ipa, ipa=ipa, is_vowel=is_vowel)
+            self._ipa_tree[phoneme.ipa] = phoneme
+            self._kk_tree[phoneme.american] = phoneme
+            self._dj_tree[phoneme.english] = phoneme
+        else:
+            try:
+                del self._ipa_tree[ipa]
+                del self._kk_tree[ipa]
+                del self._dj_tree[ipa]
+            except KeyError:
+                pass
 
     def _is_stop(self, c):
         return self._stop_libs_dic.get(c, False)
