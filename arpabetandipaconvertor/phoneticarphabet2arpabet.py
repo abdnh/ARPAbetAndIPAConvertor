@@ -4,7 +4,7 @@
 from arpabetandipaconvertor import vowels, consonants, primary_stress_ipa, \
     secondary_stress_ipa, ipa_stop_libs, skip_libs
 
-from arpabetandipaconvertor.excepts import PhonemeError, UnrecognizedSymbolsError
+from arpabetandipaconvertor.excepts import PhonemeError
 from arpabetandipaconvertor.model.syllable import Syllable
 from arpabetandipaconvertor.model.word import Word
 from arpabetandipaconvertor.model.stress import Stress
@@ -102,6 +102,7 @@ class PhoneticAlphabet2ARPAbetConvertor:
         word = Word()           #单词
         syllable = Syllable()   #音节
         temp_syllable_str = ""
+        unrecognized = ''
 
         for index, ch in enumerate(arphabet):
             if self._is_stop(c=ch):
@@ -119,22 +120,22 @@ class PhoneticAlphabet2ARPAbetConvertor:
             stress = self._stress_libs_dic.get(ch, None)
             if stress:
                 if (not last_phoneme) and index > 0:
-                    raise UnrecognizedSymbolsError(temp_ch, word)
-                else:
-                    '''
-                    遇到重音标识，说明前面是是一个音节，添加到word中，并清空last_phoneme及temp_ch
-                    '''
-                    if last_phoneme:
-                        syllable.add_phoneme(phoneme=last_phoneme)
-                        if not syllable.have_vowel:
-                            raise PhonemeError("%s Inappropriate accent mark - %s has no vowel in the previous syllable!" % (temp_syllable_str, ch))
-                        word.add_syllable(syllable=syllable)
-                        syllable = Syllable()
-                    last_phoneme = None
-                    temp_ch = ''
-                    temp_syllable_str = ch
-                    syllable.stress = stress
-                    continue
+                    last_phoneme = Phoneme(arpabet=f"<{temp_ch}>", ipa=temp_ch, american=temp_ch, english=temp_ch, is_vowel=True)
+                    unrecognized += f"<{temp_ch}> "
+                '''
+                遇到重音标识，说明前面是是一个音节，添加到word中，并清空last_phoneme及temp_ch
+                '''
+                if last_phoneme:
+                    syllable.add_phoneme(phoneme=last_phoneme)
+                    if not syllable.have_vowel:
+                        raise PhonemeError("%s Inappropriate accent mark - %s has no vowel in the previous syllable!" % (temp_syllable_str, ch))
+                    word.add_syllable(syllable=syllable)
+                    syllable = Syllable()
+                last_phoneme = None
+                temp_ch = ''
+                temp_syllable_str = ch
+                syllable.stress = stress
+                continue
 
             temp_ch += ch
             temp_phoneme = self._find_phoneme_in_arphabet_list(phoneme_string=temp_ch,
@@ -157,12 +158,12 @@ class PhoneticAlphabet2ARPAbetConvertor:
             else:
                 last_phoneme = temp_phoneme
 
-        if last_phoneme:
-            syllable.add_phoneme(last_phoneme)
-            if syllable.stress and not syllable.have_vowel:
-                raise PhonemeError("%s there are accent marks but no vowels!" % temp_syllable_str)
-            word.add_syllable(syllable)
-        else:
-            raise UnrecognizedSymbolsError(temp_ch, word)
+        if not last_phoneme:
+            last_phoneme = Phoneme(arpabet=f"<{temp_ch}>", ipa=temp_ch, american=temp_ch, english=temp_ch, is_vowel=True)
+            unrecognized += f"<{temp_ch}> "
+        syllable.add_phoneme(last_phoneme)
+        if syllable.stress and not syllable.have_vowel:
+            raise PhonemeError("%s there are accent marks but no vowels!" % temp_syllable_str)
+        word.add_syllable(syllable)
 
-        return word.translate_to_arpabet()
+        return word.translate_to_arpabet(), unrecognized.strip()
